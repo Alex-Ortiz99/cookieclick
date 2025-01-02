@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #game-container {
+            margin-top: 50px;
+        }
+
+        #click-button {
+            padding: 20px 40px;
+            font-size: 18px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #click-button:hover {
+            background-color: #218838;
+        }
+
+        #score {
+            font-size: 24px;
+            margin: 20px;
+        }
+
+        #shop {
+            margin-top: 30px;
+        }
+
+        .upgrade {
+            margin: 10px auto;
+            padding: 15px;
+            width: 200px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .upgrade:hover {
+            background-color: #0056b3;
+        }
+
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Clicker Game</h1>
+    <div id="game-container">
+        <p id="score">Score: 0</p>
+        <button id="click-button">Click Me!</button>
+        <div id="shop">
+            <button class="upgrade" id="upgrade1" data-cost="10">Upgrade 1 (+1/click) - Cost: 10</button>
+            <button class="upgrade" id="upgrade2" data-cost="50">Upgrade 2 (+5/click) - Cost: 50</button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let clickValue = 1;
+
+        const scoreElement = document.getElementById('score');
+        const clickButton = document.getElementById('click-button');
+        const upgrades = document.querySelectorAll('.upgrade');
+
+        clickButton.addEventListener('click', () => {
+            score += clickValue;
+            updateScore();
+        });
+
+        upgrades.forEach(upgrade => {
+            upgrade.addEventListener('click', () => {
+                const cost = parseInt(upgrade.getAttribute('data-cost'));
+                const increment = upgrade.id === 'upgrade1' ? 1 : 5;
+
+                if (score >= cost) {
+                    score -= cost;
+                    clickValue += increment;
+                    upgrade.setAttribute('data-cost', cost * 2);
+                    upgrade.textContent = `Upgrade ${increment === 1 ? 1 : 2} (+${increment}/click) - Cost: ${cost * 2}`;
+                    updateScore();
+                }
+            });
+        });
+
+        function updateScore() {
+            scoreElement.textContent = `Score: ${score}`;
+            upgrades.forEach(upgrade => {
+                const cost = parseInt(upgrade.getAttribute('data-cost'));
+                if (score < cost) {
+                    upgrade.classList.add('disabled');
+                } else {
+                    upgrade.classList.remove('disabled');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
